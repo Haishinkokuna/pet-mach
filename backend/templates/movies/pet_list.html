@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>{% if my_pets %}Mis Mascotas{% else %}Mascotas Disponibles{% endif %}</h2>
+        </div>
+        {% if user.is_authenticated and not my_pets %}
+            <div class="col-md-4 text-right">
+                <a href="{% url 'pet_create' %}" class="btn btn-primary">+ Agregar Mascota</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Search and Filter Section -->
+    {% if not my_pets %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="form-inline">
+                    <input type="text" class="form-control mr-2 flex-grow-1" name="search" placeholder="Buscar mascota..." value="{{ search }}">
+                    <select name="breed" class="form-control mr-2">
+                        <option value="">Todas las razas</option>
+                        {% for breed in breeds %}
+                            <option value="{{ breed.id }}" {% if request.GET.breed|stringformat:"s" == breed.id|stringformat:"s" %}selected{% endif %}>{{ breed.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                    <a href="{% url 'pet_list' %}" class="btn btn-secondary ml-2">Limpiar</a>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Pets Grid -->
+    <div class="row">
+        {% for pet in pets %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if pet.image %}
+                        <img src="{{ pet.image.url }}" class="card-img-top pet-image" alt="{{ pet.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x250?text=Sin+Foto" class="card-img-top pet-image" alt="{{ pet.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pet.name }}</h5>
+                        <p class="card-text">
+                            <small class="badge badge-info">{{ pet.breed.name }}</small><br>
+                            <small class="text-muted">{{ pet.get_gender_display }}</small><br>
+                            <small class="text-muted">Edad: {{ pet.age }} años</small>
+                        </p>
+                        <p class="card-text text-truncate" style="max-height: 60px;">{{ pet.description }}</p>
+                        <p class="card-text">
+                            <small class="text-muted">Dueño: {{ pet.owner.first_name|default:pet.owner.username }}</small>
+                        </p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'pet_detail' pet.pk %}" class="btn btn-primary btn-sm btn-block">Ver Detalle</a>
+                        {% if user.is_authenticated and pet.owner == user %}
+                            <div class="mt-2">
+                                <a href="{% url 'pet_edit' pet.pk %}" class="btn btn-warning btn-sm btn-block">Editar</a>
+                                <a href="{% url 'pet_delete' pet.pk %}" class="btn btn-danger btn-sm btn-block">Eliminar</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    {% if my_pets %}
+                        No tienes mascotas registradas. <a href="{% url 'pet_create' %}">Agregar una mascota</a>
+                    {% else %}
+                        No hay mascotas disponibles que coincidan con tu búsqueda.
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

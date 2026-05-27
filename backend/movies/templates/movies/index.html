@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-4">🐾 Pet Match</h1>
+                    <p class="lead">Plataforma responsable para gestión de cruzas de mascotas en Quilpué</p>
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="btn btn-light btn-lg mr-3">Registrarse</a>
+                        <a href="{% url 'pet_list' %}" class="btn btn-outline-light btn-lg">Ver Mascotas</a>
+                    {% else %}
+                        <a href="{% url 'pet_create' %}" class="btn btn-light btn-lg mr-3">Agregar Mascota</a>
+                        <a href="{% url 'my_pets' %}" class="btn btn-outline-light btn-lg">Mis Mascotas</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card bg-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="card-title text-primary">{{ total_pets }}</h3>
+                    <p class="card-text">Mascotas Disponibles</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-white shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="card-title text-success">{{ total_breeds }}</h3>
+                    <p class="card-text">Razas Registradas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Pets Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-4">Mascotas Recientes</h2>
+        </div>
+        {% for pet in recent_pets %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if pet.image %}
+                        <img src="{{ pet.image.url }}" class="card-img-top pet-image" alt="{{ pet.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x250?text=Sin+Foto" class="card-img-top pet-image" alt="{{ pet.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pet.name }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">{{ pet.breed.name }}</small><br>
+                            <small class="text-muted">{{ pet.get_gender_display }} • {{ pet.age }} años</small>
+                        </p>
+                        <p class="card-text text-truncate">{{ pet.description|truncatewords:10 }}</p>
+                        <a href="{% url 'pet_detail' pet.pk %}" class="btn btn-primary btn-sm">Ver Detalle</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">No hay mascotas disponibles en este momento.</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <a href="{% url 'pet_list' %}" class="btn btn-primary btn-lg">Ver Todas las Mascotas</a>
+        </div>
+    </div>
+{% endblock %}

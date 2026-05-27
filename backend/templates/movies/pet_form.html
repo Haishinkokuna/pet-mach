@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4">{% if action == 'Crear' %}Agregar Nueva Mascota{% else %}Editar Mascota{% endif %}</h2>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="{{ form.breed.id_for_label }}">{{ form.breed.label }}</label>
+                            {% render_field form.breed %}
+                            {% if form.breed.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.breed.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            {% render_field form.name %}
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.gender.id_for_label }}">{{ form.gender.label }}</label>
+                                {% render_field form.gender %}
+                                {% if form.gender.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.gender.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="{{ form.birth_date.id_for_label }}">{{ form.birth_date.label }}</label>
+                                {% render_field form.birth_date %}
+                                {% if form.birth_date.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.birth_date.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                            <small class="form-text text-muted">{{ form.description.help_text }}</small>
+                            {% render_field form.description %}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.description.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+                            <small class="form-text text-muted">{{ form.image.help_text }}</small>
+                            {% render_field form.image %}
+                            {% if form.image.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.image.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if form.image.value %}
+                                <div class="mt-2">
+                                    <img src="{{ form.image.value.url }}" style="max-width: 200px; border-radius: 5px;">
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.health_certificate.id_for_label }}">{{ form.health_certificate.label }}</label>
+                            <small class="form-text text-muted">{{ form.health_certificate.help_text }}</small>
+                            {% render_field form.health_certificate %}
+                            {% if form.health_certificate.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.health_certificate.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group form-check">
+                            {% render_field form.is_available %}
+                            <label class="form-check-label" for="{{ form.is_available.id_for_label }}">
+                                {{ form.is_available.label }}
+                            </label>
+                            {% if form.is_available.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.is_available.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                {% if action == 'Crear' %}Crear Mascota{% else %}Guardar Cambios{% endif %}
+                            </button>
+                            <a href="{% url 'my_pets' %}" class="btn btn-secondary btn-lg btn-block mt-2">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
