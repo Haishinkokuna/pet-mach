@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Intenta hacer login con la API de Django (si está encendida)
     try {
-      final response = await http.post(
+      await http.post(
         Uri.parse('$baseUrl/login/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({"username": email, "password": password}),
