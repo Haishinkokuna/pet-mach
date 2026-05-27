@@ -6,7 +6,7 @@ void main() {
   runApp(const PetMatchApp());
 }
 
-const String baseUrl = 'http://127.0.0.1:8000/api';
+const String baseUrl = 'https://haishinkokuna.pythonanywhere.com/api';
 
 class PetMatchApp extends StatelessWidget {
   const PetMatchApp({super.key});
